@@ -7,7 +7,7 @@
 
 ---
 
-## Research Overview
+## Research
 
 For this task, I focused on two main areas of research: the **Merge Sort algorithm** and **Unreal Insights**, a profiling tool within Unreal Engine. The latter is critical for optimizing performance, particularly with the goal of maintaining a steady 60 FPS in Unreal Engine projects.
 
@@ -190,7 +190,7 @@ void UInventory::SortItemsByValue_Implementation()
 }
 ```
 
-#### Control check
+#### Testing
 
 In order to check that our sorting is working properly, I created a simple Blueprint script within the level blueprint which tests the sorts:
 
@@ -239,7 +239,7 @@ Due to limitations in Unreal Engine’s Blueprint system, specifically its lack 
 To assess the performance of the C++ and Blueprint implementations, I conducted tests using **Unreal Insights**. To ensure accuracy, I added a delay node before sorting to isolate the initialization logic from the sorting operation. Print statements were also inserted to make the function calls easier to trace in the profiler. Here is the Blueprint Script I used for performance testing
 <iframe width="100%" height="500px" src="https://blueprintue.com/render/lh47imgp/" scrolling="no" allowfullscreen></iframe>
 
-### Results
+### Outcome
 
 **C++ Sorting Performance:**  
 *4.5 microseconds*  
@@ -252,6 +252,8 @@ To assess the performance of the C++ and Blueprint implementations, I conducted 
 ![Blueprint Performance](./Resources/BP_Sorting.png)
 
 As demonstrated by these results, the Blueprint version is approximately **34 times slower** than the C++ implementation. This highlights the significant performance overhead associated with Blueprint scripting for computationally intensive tasks such as sorting.
+
+All the project files with the implementations and testing code could be found [here](https://github.com/DmitryKolchin/AdvancedProgramming2024/tree/main/InventorySorting)
 
 ---
 
