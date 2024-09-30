@@ -34,7 +34,7 @@ void UInventory::DisplayInventory()
 
 void UInventory::SortItemsByName_Implementation()
 {
-	SortItems( 0, Items.Num() - 1, [](const FInventoryItem& Left, const FInventoryItem& Right)
+	SortItemsArrayPart( 0, Items.Num() - 1, [](const FInventoryItem& Left, const FInventoryItem& Right)
 	{
 		return Left.Name < Right.Name;
 	} );
@@ -42,7 +42,7 @@ void UInventory::SortItemsByName_Implementation()
 
 void UInventory::SortItemsByValue_Implementation()
 {
-	SortItems( 0, Items.Num() - 1, [](const FInventoryItem& Left, const FInventoryItem& Right)
+	SortItemsArrayPart( 0, Items.Num() - 1, [](const FInventoryItem& Left, const FInventoryItem& Right)
 	{
 		return Left.Value < Right.Value;
 	} );

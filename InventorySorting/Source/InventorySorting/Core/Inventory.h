@@ -50,7 +50,7 @@ public:
 
 private:
 	template <typename F>
-	void SortItems(int32 LeftBorder, int32 RightBorder, F Comparator)
+	void SortItemsArrayPart(int32 LeftBorder, int32 RightBorder, F Comparator)
 	{
 		if (RightBorder <= LeftBorder)
 		{
@@ -59,27 +59,27 @@ private:
 
 		int32 MidBorder = LeftBorder + (RightBorder - LeftBorder) / 2;
 
-		SortItems( LeftBorder, MidBorder, Comparator );
-		SortItems( MidBorder + 1, RightBorder, Comparator );
-		Merge( LeftBorder, MidBorder, RightBorder, Comparator );
+		SortItemsArrayPart( LeftBorder, MidBorder, Comparator );
+		SortItemsArrayPart( MidBorder + 1, RightBorder, Comparator );
+		MergeTwoSortedItemArrayParts( LeftBorder, MidBorder, RightBorder, Comparator );
 
 	};
 
 	template <typename F>
-	void Merge(int32 LeftBorder, int32 MidBorder, int32 RightBorder, F Comparator)
+	void MergeTwoSortedItemArrayParts(int32 LeftBorder, int32 MidBorder, int32 RightBorder, F Comparator)
 	{
 		// Copying the left and right parts to separate arrays
-		TArray<FInventoryItem> LeftArray;
-		TArray<FInventoryItem> RightArray;
+		TArray<FInventoryItem> LeftPart;
+		TArray<FInventoryItem> RightPart;
 
 		for ( int32 Index = LeftBorder; Index <= MidBorder; Index++ )
 		{
-			LeftArray.Add( Items[ Index ] );
+			LeftPart.Add( Items[ Index ] );
 		}
 
 		for ( int32 Index = MidBorder + 1; Index <= RightBorder; Index++ )
 		{
-			RightArray.Add( Items[ Index ] );
+			RightPart.Add( Items[ Index ] );
 		}
 
 		// Merging the left and right parts using provided comparator
@@ -89,28 +89,28 @@ private:
 
 		int32 CurrentMainItemIndex = LeftBorder;
 
-		while ( CurrentLeftItemIndex < LeftArray.Num() && CurrentRightItemIndex < RightArray.Num() )
+		while ( CurrentLeftItemIndex < LeftPart.Num() && CurrentRightItemIndex < RightPart.Num() )
 		{
-			if ( Comparator( LeftArray[ CurrentLeftItemIndex ], RightArray[ CurrentRightItemIndex ] ) )
+			if ( Comparator( LeftPart[ CurrentLeftItemIndex ], RightPart[ CurrentRightItemIndex ] ) )
 			{
-				Items[ CurrentMainItemIndex++ ] = LeftArray[ CurrentLeftItemIndex++ ];
+				Items[ CurrentMainItemIndex++ ] = LeftPart[ CurrentLeftItemIndex++ ];
 			}
 			else
 			{
-				Items[ CurrentMainItemIndex++ ] = RightArray[ CurrentRightItemIndex++ ];
+				Items[ CurrentMainItemIndex++ ] = RightPart[ CurrentRightItemIndex++ ];
 			}
 		}
 
 		// Copying the remaining items from the left and right parts
 
-		while ( CurrentLeftItemIndex < LeftArray.Num() )
+		while ( CurrentLeftItemIndex < LeftPart.Num() )
 		{
-			Items[ CurrentMainItemIndex++ ] = LeftArray[ CurrentLeftItemIndex++ ];
+			Items[ CurrentMainItemIndex++ ] = LeftPart[ CurrentLeftItemIndex++ ];
 		}
 
-		while ( CurrentRightItemIndex < RightArray.Num() )
+		while ( CurrentRightItemIndex < RightPart.Num() )
 		{
-			Items[ CurrentMainItemIndex++ ] = RightArray[ CurrentRightItemIndex++ ];
+			Items[ CurrentMainItemIndex++ ] = RightPart[ CurrentRightItemIndex++ ];
 		}
 	};
 
