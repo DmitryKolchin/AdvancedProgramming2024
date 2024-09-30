@@ -11,25 +11,13 @@ void UInventory::DisplayInventory()
 {
 	FString SeparationLine{"----------------"};
 	UE_LOG( LogTemp, Warning, TEXT( "%s" ), *SeparationLine );
-	if ( GEngine )
-	{
-		GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, SeparationLine );
-	}
 
 	for ( auto Item : Items )
 	{
 		UE_LOG( LogTemp, Warning, TEXT( "%s" ), *Item.ToString() );
-		if ( GEngine )
-		{
-			GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, Item.ToString() );
-		}
 	}
 
 	UE_LOG( LogTemp, Warning, TEXT( "%s" ), *SeparationLine );
-	if ( GEngine )
-	{
-		GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, SeparationLine );
-	}
 }
 
 void UInventory::SortItemsByName_Implementation()

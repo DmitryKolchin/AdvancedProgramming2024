@@ -52,17 +52,19 @@ private:
 	template <typename F>
 	void SortItemsArrayPart(int32 LeftBorder, int32 RightBorder, F Comparator)
 	{
-		if (RightBorder <= LeftBorder)
+		// If the left border is greater or equal to the right border, then the array can be considered already sorted
+		if ( RightBorder <= LeftBorder )
 		{
 			return;
 		}
 
-		int32 MidBorder = LeftBorder + (RightBorder - LeftBorder) / 2;
-
+		// Dividing the array into two parts and sorting them separately
+		int32 MidBorder = LeftBorder + ( RightBorder - LeftBorder ) / 2;
 		SortItemsArrayPart( LeftBorder, MidBorder, Comparator );
 		SortItemsArrayPart( MidBorder + 1, RightBorder, Comparator );
-		MergeTwoSortedItemArrayParts( LeftBorder, MidBorder, RightBorder, Comparator );
 
+		// Merging two sorted parts
+		MergeTwoSortedItemArrayParts( LeftBorder, MidBorder, RightBorder, Comparator );
 	};
 
 	template <typename F>
