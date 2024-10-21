@@ -5,8 +5,12 @@
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
 #include "HPPotionOptimisation/UI/PlayerIconWidget.h"
+#include "HPPotionOptimisation/PotionSystem/HealthPotionSystem.h"
 #include "PlayerCharacter.generated.h"
 
+struct FOverTimeHealingPotion;
+
+class UHealingPotion;
 class UCharacterInfoDataAsset;
 class UPlayerIconWidget;
 /**
@@ -22,16 +26,23 @@ private:
 	FText CharacterName;
 
 	UPROPERTY()
-	int32 CurrentHealth;
+	float CurrentHealth;
 
 	UPROPERTY()
-	int32 MaxHealth;
+	float MaxHealth;
 
 	UPROPERTY( EditDefaultsOnly, Category="UI" )
 	TSoftClassPtr<UPlayerIconWidget> PlayerIconWidgetClassSoftClassPtr;
 
 	UPROPERTY()
 	UPlayerIconWidget* PlayerIconWidget;
+
+	/** Over time healing potion */
+
+	UPROPERTY()
+	TOptional<FOverTimeHealingPotion> ActiveHealingPotion;
+
+
 
 public:
 	/* Initialization from the provided Data Asset */
@@ -43,14 +54,22 @@ public:
 	FText GetCharacterName() const;
 
 	UFUNCTION( BlueprintPure )
-	int32 GetCurrentHealth() const;
+	float GetCurrentHealth() const;
 
 	UFUNCTION( BlueprintPure )
-	int32 GetMaxHealth() const;
+	float GetMaxHealth() const;
 
 	UFUNCTION( BlueprintPure )
 	UPlayerIconWidget* GetPlayerIconWidget() const;
 
 	/* Function that adds health to the player, and clamps it according to the Max Health parameter value*/
-	void AddHealth(int32 HealthToAdd);
+	void AddHealth(float HealthToAdd);
+
+	void SetNewOverTimeHealingPotion(const FOverTimeHealingPotion& NewOverTimeHealingPotion);
+
+
+private:
+	void ApplyOverTimeHealingPotionPerTick();
+
+
 };

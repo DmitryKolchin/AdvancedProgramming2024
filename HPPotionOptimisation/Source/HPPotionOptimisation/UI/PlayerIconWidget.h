@@ -23,4 +23,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetPlayerIconTexture(UTexture2D* NewPlayerIconTexture);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetPotentialHealthPercent(float NewPotentialHealthPercent);
 };

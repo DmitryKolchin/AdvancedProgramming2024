@@ -10,7 +10,10 @@
 ## Initial Research
 
 Initially, I wanted to separate this task into 2 different subtasks
-- Implement
+- Implement the basic task with autohealing of all the characters with the provided potions instantly
+- Implement healing with the following modifications:
+	- Now each potion applies X points of health instantly and x% of maximum health in t seconds (diablo 4 reference)
+- Applying new potion will stop previosuly used potion to add health
 
 ---
 
@@ -386,9 +389,208 @@ LogTemp: Warning: Adding 10 health to Shadowheart
 
 *Figure 18. Logs of the healing process.*
 
----
+### Reimagining the healing system
+Int32 -> float
+First of all, I changed all the int32 types to float in health calculations. Sicne now we are talking about the percents, the added values are not gonna be integer, and keeping 
+health as an integer value will make it complicated
 
-This concludes the refactored chapter, where we enhanced clarity, ensured consistency, and maintained a detailed and in-depth explanation of the health potion system's logic and blueprint implementation.
+Secondly, I created a new potion struct:
+```cpp
+USTRUCT( BlueprintType )
+struct FOverTimeHealingPotion
+{
+	GENERATED_BODY()
+
+	UPROPERTY( EditDefaultsOnly, BlueprintReadWrite )
+	FString PotionName;
+
+	/** How many health points is restored instantly */
+	UPROPERTY( EditDefaultsOnly, BlueprintReadWrite )
+	float InstantHealingValue;
+
+	/** Which percent of max health is restored over time */
+	UPROPERTY( EditDefaultsOnly, BlueprintReadWrite )
+	float MaxHealthPercentageToHealOverTime;
+
+	/** How long the healing effect lasts in total*/
+	UPROPERTY( EditDefaultsOnly, BlueprintReadWrite )
+	float TotalHealingDuration;
+
+	/** How long the healing effect has been active */
+	UPROPERTY( )
+	float ElapsedHealingDuration;
+
+	float GetTotalHealingValue(const float MaxHealth) const
+	{
+		return InstantHealingValue + MaxHealth * MaxHealthPercentageToHealOverTime;
+	}
+
+	float GetHealingValuePerTick(const float MaxHealth, const float DeltaTime)
+	{
+		return (MaxHealth * MaxHealthPercentageToHealOverTime / TotalHealingDuration) * DeltaTime;
+	}
+};
+```
+
+It has the name as the old potion. It has Instant Healing Value, MaxHealthPercentageToHealOverTime and Total Healing Duration settable variables, which define how many healthpoints
+will the player get and how long it will take it
+It also has ElapsedHealingDuration - service variable to track how long this exact instance has been applied
+
+GetTotalHealingValue and GetHealingValuePerTick are also service functions that hide calculations behind themselves
+
+Next - we need to add the trackable active potion to character.
+Since it is important for me to track two different facts:
+- Does the player have any active potion (to start the each tick timer if it has not )
+- What is the active potion
+
+The most dull approach would be to create a bool variable: set it when the active potion is initialized, and reset it when it expires
+Unreal Engine laready has a prebuild solution called TOptional<> just for this case [(ui, 2020)](https://benui.ca/unreal/toptional/):
+```cpp
+UPROPERTY()
+TOptional<FOverTimeHealingPotion> ActiveHealingPotion;
+```
+Alternative approach would be to isolate all the logic I will call every tick into the Tick() function,
+but the UPlayerCharacter is a UObject, not an AActor, it does not have a Tick() function in it
+
+Now, we need to add the opportunity to setup new healing potion:
+```cpp
+void UPlayerCharacter::SetNewOverTimeHealingPotion(const FOverTimeHealingPotion& NewOverTimeHealingPotion)
+{
+	if ( !IsValid( PlayerIconWidget ) )
+	{
+		ensureAlwaysMsgf( false, TEXT("PlayerIconWidget is not valid") );
+		return;
+	}
+
+	// If we have no active healing potion, we start the healing effect
+	if ( !ActiveHealingPotion.IsSet() )
+	{
+		GetWorld()->GetTimerManager().SetTimerForNextTick( this, &UPlayerCharacter::ApplyOverTimeHealingPotionPerTick );
+	}
+
+	// Setting the new active healing potion
+	ActiveHealingPotion = NewOverTimeHealingPotion;
+
+	// Calculating potential health to show it on the UI
+	float PotentialHealth = FMath::Min( MaxHealth, CurrentHealth + ActiveHealingPotion.GetValue().GetTotalHealingValue( MaxHealth) );
+	PlayerIconWidget->SetPotentialHealthPercent( PotentialHealth / MaxHealth );
+
+	// Adding the instant healing value to the player
+	AddHealth( ActiveHealingPotion.GetValue().InstantHealingValue );
+}
+```
+This function accepts the new active healing potion. If there is already active healing potion, the health update function will be called next tick anyway, so we do not need to
+add another call. Otherwise, I set a one tick timer 
+
+It also calls a cosmetical SetPotentialHealthPercent on the PlayerIconWidget, to indicate how many health points will be restored over time
+
+The ApplyOverTimeHealingValue function looks like this:
+
+```cpp
+
+void UPlayerCharacter::ApplyOverTimeHealingPotionPerTick()
+{
+	if ( !IsValid( GetWorld() ) )
+	{
+		ensureAlwaysMsgf( false, TEXT("World is not valid") );
+		return;
+	}
+
+	// If we do not have any active healing potion, we stop the function
+	if ( !ActiveHealingPotion.IsSet() )
+	{
+		return;
+	}
+
+	float DeltaSeconds = GetWorld()->GetDeltaSeconds();
+
+	// Calculating the added health
+	float HealingValuePerTick = ActiveHealingPotion.GetValue().GetHealingValuePerTick( MaxHealth, DeltaSeconds );
+
+	// Adding the health to the player
+	AddHealth( HealingValuePerTick );
+
+	ActiveHealingPotion.GetValue().ElapsedHealingDuration += GetWorld()->GetDeltaSeconds();
+
+	// If the healing effect has expired or the player is at full health, we stop the healing effect
+	if ( ActiveHealingPotion.GetValue().ElapsedHealingDuration >= ActiveHealingPotion.GetValue().TotalHealingDuration || CurrentHealth == MaxHealth )
+	{
+		ActiveHealingPotion.Reset();
+		return;
+	}
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick( this, &UPlayerCharacter::ApplyOverTimeHealingPotionPerTick );
+}
+
+```
+
+Nothing much. It checks whether the player has max health or the potion has expired, and sets a timer for next tick to call itself otherwise.
+And, of coruse, heals player for the required amount of health points.
+
+
+Additionally, I added a separate function inside the Health Potion System to use only onlu one over time potion per character per call instead of using all of the generic potions:
+```cpp
+void UHealthPotionSystem::HealPlayersWithOverTimePotions(TArray<UPlayerCharacter*> Players)
+{
+	// Let's sort all the available potions in descending order of healing value
+	OverTimeHealingPotions.Sort( [](const FOverTimeHealingPotion& A, const FOverTimeHealingPotion& B)
+	{
+		return A.InstantHealingValue > B.InstantHealingValue;
+	} );
+
+	// Outer loop to iterate over all players
+	for ( auto Player : Players )
+	{
+		UE_LOG( LogTemp, Warning, TEXT("%s currently has %f/%f health"), *Player->GetCharacterName().ToString(), Player->GetCurrentHealth(), Player->GetMaxHealth() );
+		// Initial check to see if the player is already at full health
+		if ( Player->GetMaxHealth() == Player->GetCurrentHealth() )
+		{
+			continue;
+		}
+
+		bool bPotionWasApplied = false;
+
+		// Inner loop to iterate over all potions
+		for ( int32 PotionIndex = 0; PotionIndex < OverTimeHealingPotions.Num(); ++PotionIndex )
+		{
+			// If we can heal this player without exceeding the max health, we can use this potion
+			float MissingHealth = Player->GetMaxHealth() - Player->GetCurrentHealth();
+			float RestoredHealth = OverTimeHealingPotions[ PotionIndex ].GetTotalHealingValue( Player->GetMaxHealth() );
+			if ( RestoredHealth <= MissingHealth )
+			{
+				// Applying the healing value of the potion to the player, and removing the potion
+				Player->SetNewOverTimeHealingPotion( OverTimeHealingPotions[ PotionIndex ] );
+				OverTimeHealingPotions.RemoveAt( PotionIndex );
+				bPotionWasApplied = true;
+				break;
+			}
+		}
+
+		if ( bPotionWasApplied )
+		{
+			continue;
+		}
+
+		// If the player is not at full health, and we still have potions left, we can use the last potion
+		// We will waste the potion, but the player will be fully healed
+		if ( Player->GetCurrentHealth() < Player->GetMaxHealth() && OverTimeHealingPotions.Num() > 0 )
+		{
+			Player->SetNewOverTimeHealingPotion( OverTimeHealingPotions.Last() );
+			OverTimeHealingPotions.RemoveAt( OverTimeHealingPotions.Num() - 1 );
+		}
+	}
+}
+```
+
+Now let's see the results.
+I changed the intial Astarion's health to 10 so the example would be more visible.
+
+As we can see, the health is restored bit by bit.
+![](./Resources/OverTimeOnce.gif)
+
+Another example - I called another potions apply in 1.5 secs after the first call, so that the new potion will be applied when the old one is not expired yet:
+![](./Resources/OverTimeTwice.gif)
+
 
 ## Bibliography
 Actors in Unreal Engine | Unreal Engine 5.5 Documentation | Epic Developer Community (s.d.) At: https://dev.epicgames.com/documentation/en-us/unreal-engine/actors-in-unreal-engine (Accessed  17/10/2024).
