@@ -9,13 +9,15 @@
 
 ## Initial Research
 
-Initially, I wanted to separate this task into 2 different subtasks
-- Implement the basic task with autohealing of all the characters with the provided potions instantly
-- Implement healing with the following modifications:
-	- Now each potion applies X points of health instantly and x% of maximum health in t seconds (diablo 4 reference)
-- Applying new potion will stop previosuly used potion to add health
+The healing system implementation was broken into two subtasks to manage increasing complexity:
 
----
+1. **Basic Auto-Healing Mechanic**  
+   This subtask focused on instant healing where characters immediately gain health based on available potions. Potions are applied only if a character's health is below their maximum, with the most efficient (highest healing value) potions being used first. This ensures no potion is wasted, and the character is healed fully in a single step.
+
+2. **Advanced Healing with Delayed Effect**  
+   The second subtask expanded the system to include both instant and delayed healing, inspired by the health potions in *Diablo IV* (Diablo IV, 2023). Potions now apply **X** points of health instantly and a percentage of maximum health over a time period **t** [(Healing Potions, 2024)](https://diablo4.wiki.fextralife.com/Healing+Potions). If a new potion is consumed during the active healing process of a previous one, the ongoing healing is interrupted, and the new potion starts its effect. 
+
+This approach allows for a simple start, progressing into more complex gameplay mechanics involving timed health restoration and potion interruption.
 
 ## Implementation
 
@@ -389,12 +391,14 @@ LogTemp: Warning: Adding 10 health to Shadowheart
 
 *Figure 18. Logs of the healing process.*
 
-### Reimagining the healing system
-Int32 -> float
-First of all, I changed all the int32 types to float in health calculations. Sicne now we are talking about the percents, the added values are not gonna be integer, and keeping 
-health as an integer value will make it complicated
+### Reimagining the Healing System
 
-Secondly, I created a new potion struct:
+**Transition from `Int32` to `Float`**  
+Initially, all health-related values were stored as `Int32`. However, as the healing system now incorporates percentages, using floats for calculations became essential. With this change, healing values are not restricted to integers, allowing for more precise health adjustments.
+
+**New Potion Struct**  
+A new structure, `FOverTimeHealingPotion`, was introduced to encapsulate the parameters for over-time healing:
+
 ```cpp
 USTRUCT( BlueprintType )
 struct FOverTimeHealingPotion
@@ -432,27 +436,28 @@ struct FOverTimeHealingPotion
 };
 ```
 
-It has the name as the old potion. It has Instant Healing Value, MaxHealthPercentageToHealOverTime and Total Healing Duration settable variables, which define how many healthpoints
-will the player get and how long it will take it
-It also has ElapsedHealingDuration - service variable to track how long this exact instance has been applied
+*Figure 19. Over time healing potion struct.*
 
-GetTotalHealingValue and GetHealingValuePerTick are also service functions that hide calculations behind themselves
+This struct contains all the critical data for healing potions:
+- **InstantHealingValue** for immediate health restoration.
+- **MaxHealthPercentageToHealOverTime** and **TotalHealingDuration** manage the over-time healing effects.
+- **ElapsedHealingDuration** tracks potion use duration.
 
-Next - we need to add the trackable active potion to character.
-Since it is important for me to track two different facts:
-- Does the player have any active potion (to start the each tick timer if it has not )
-- What is the active potion
+Helper functions like `GetTotalHealingValue` and `GetHealingValuePerTick` encapsulate the math for applying healing. This approach ensures that the healing mechanics are scalable and maintainable, allowing different potions to have varying effects based on game balance needs.
 
-The most dull approach would be to create a bool variable: set it when the active potion is initialized, and reset it when it expires
-Unreal Engine laready has a prebuild solution called TOptional<> just for this case [(ui, 2020)](https://benui.ca/unreal/toptional/):
+**Tracking the Active Potion**  
+Tracking active potions is essential since only one should be effective at any time. Instead of adding a simple boolean flag, the system utilises Unreal Engine’s `TOptional<>`, which allows the handling of an optional value, making it more efficient and flexible.
+
 ```cpp
 UPROPERTY()
 TOptional<FOverTimeHealingPotion> ActiveHealingPotion;
 ```
-Alternative approach would be to isolate all the logic I will call every tick into the Tick() function,
-but the UPlayerCharacter is a UObject, not an AActor, it does not have a Tick() function in it
 
-Now, we need to add the opportunity to setup new healing potion:
+This avoids unnecessary additional variables and provides a cleaner, more efficient way of managing whether or not a potion is active. It's a direct solution for determining if healing should be applied on a per-tick basis.
+
+**Potion Application and UI Feedback**  
+When setting a new potion, the `SetNewOverTimeHealingPotion` method first checks if any potion is active. If no potion is currently active, the system will initiate the healing on the next tick.
+
 ```cpp
 void UPlayerCharacter::SetNewOverTimeHealingPotion(const FOverTimeHealingPotion& NewOverTimeHealingPotion)
 {
@@ -479,15 +484,14 @@ void UPlayerCharacter::SetNewOverTimeHealingPotion(const FOverTimeHealingPotion&
 	AddHealth( ActiveHealingPotion.GetValue().InstantHealingValue );
 }
 ```
-This function accepts the new active healing potion. If there is already active healing potion, the health update function will be called next tick anyway, so we do not need to
-add another call. Otherwise, I set a one tick timer 
+*Figure 20. Set new healing potion logic.*
 
-It also calls a cosmetical SetPotentialHealthPercent on the PlayerIconWidget, to indicate how many health points will be restored over time
+The function calculates how much health the player will gain and updates the UI with potential health restoration. This gives the player immediate visual feedback on how much health will be restored over time. The instant healing effect is also applied during this call.
 
-The ApplyOverTimeHealingValue function looks like this:
+**Over-Time Healing Process**  
+The actual healing over time is managed by `ApplyOverTimeHealingPotionPerTick`, which is called every tick until the potion effect expires or the player's health is full.
 
 ```cpp
-
 void UPlayerCharacter::ApplyOverTimeHealingPotionPerTick()
 {
 	if ( !IsValid( GetWorld() ) )
@@ -521,14 +525,14 @@ void UPlayerCharacter::ApplyOverTimeHealingPotionPerTick()
 
 	GetWorld()->GetTimerManager().SetTimerForNextTick( this, &UPlayerCharacter::ApplyOverTimeHealingPotionPerTick );
 }
-
 ```
+*Figure 21. Per tick healing logic.*
 
-Nothing much. It checks whether the player has max health or the potion has expired, and sets a timer for next tick to call itself otherwise.
-And, of coruse, heals player for the required amount of health points.
+The method works by incrementing the elapsed time each tick and applying the appropriate health recovery. Once the potion expires or the player’s health is full, the potion is removed.
 
+**Applying Potions Strategically**  
+To prevent multiple potions from being used simultaneously, the function `HealPlayersWithOverTimePotions` ensures that only one potion is applied per player at a time. It also sorts potions by their healing value to optimise which one to use.
 
-Additionally, I added a separate function inside the Health Potion System to use only onlu one over time potion per character per call instead of using all of the generic potions:
 ```cpp
 void UHealthPotionSystem::HealPlayersWithOverTimePotions(TArray<UPlayerCharacter*> Players)
 {
@@ -581,23 +585,49 @@ void UHealthPotionSystem::HealPlayersWithOverTimePotions(TArray<UPlayerCharacter
 	}
 }
 ```
+*Figure 22. Updated health potion usage.*
 
-Now let's see the results.
-I changed the intial Astarion's health to 10 so the example would be more visible.
+This function ensures that the most valuable potion is used efficiently without wasting excess healing potential. It prevents over-healing and ensures that only one potion is active per player.
 
-As we can see, the health is restored bit by bit.
-![](./Resources/OverTimeOnce.gif)
+Now, let's examine the results.
 
-Another example - I called another potions apply in 1.5 secs after the first call, so that the new potion will be applied when the old one is not expired yet:
-![](./Resources/OverTimeTwice.gif)
+To make the effect more noticeable, I initially set Astarion’s health to 10. This allowed the over-time healing system to demonstrate how health is restored gradually rather than instantly.
+
+As shown in the example, the health recovery is applied bit by bit, with each tick incrementally restoring a portion of health based on the configured potion values.
+
+![](./Resources/OverTimeOnce.gif)  
+*Figure 23. Gradual health restoration using an over-time potion.*
+
+In the next example, I applied another potion just 1.5 seconds after the first one, demonstrating how the system reacts when a new potion is used before the previous effect has expired. As expected, the new potion interrupts the ongoing healing process, and the new effect takes over, applying its own instant and over-time healing.
+
+![](./Resources/OverTimeTwice.gif)  
+*Figure 24. Over-time healing interrupted by a new potion.*
+
+This interruption mechanism ensures that when a stronger or more suitable potion is applied mid-healing, it immediately overrides the previous effect.
+
+All the project files could be found [here](https://github.com/DmitryKolchin/AdvancedProgramming2024/tree/main/HPPotionOptimisation)
+
+## Critical Reflection
+### What went well
+- The sorting algorithm works efficeintly in most classes
+- The outcomes meet the task expectations
+- The modified version of the task works
+
+### What could have gone better
+- The algorithm may be not always the most effective
+- The player class references the Health Potion system and vice versa. In complete development I would
+rather spend more time on planning the architecture to be escape such things
 
 
 ## Bibliography
-Actors in Unreal Engine | Unreal Engine 5.5 Documentation | Epic Developer Community (s.d.) At: https://dev.epicgames.com/documentation/en-us/unreal-engine/actors-in-unreal-engine (Accessed  17/10/2024).
+- Actors in Unreal Engine | Unreal Engine 5.5 Documentation | Epic Developer Community (s.d.) At: https://dev.epicgames.com/documentation/en-us/unreal-engine/actors-in-unreal-engine (Accessed  17/10/2024).
+- Baldur’s Gate III (2023) 
+- Diablo IV (2023) 
+- Healing Potions (2024) At: https://diablo4.wiki.fextralife.com/Healing+Potions (Accessed  22/10/2024).
+- Structs in Unreal Engine | Unreal Engine 5.5 Documentation | Epic Developer Community (s.d.) At: https://dev.epicgames.com/documentation/en-us/unreal-engine/structs-in-unreal-engine (Accessed  17/10/2024).
+ui,  ben (2020) 
+- Why TOptional<T> is my new favourite tool. At: https://benui.ca/unreal/toptional/ (Accessed  21/10/2024).
 
-Baldur’s Gate III (2023) 
-
-Structs in Unreal Engine | Unreal Engine 5.5 Documentation | Epic Developer Community (s.d.) At: https://dev.epicgames.com/documentation/en-us/unreal-engine/structs-in-unreal-engine (Accessed  17/10/2024).
 
 
 ## Declared Assets
