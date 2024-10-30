@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BranchingDialogueSystem.Views.DialoguePage"
+             xmlns:views="clr-namespace:BranchingDialogueSystem.Views"
+             xmlns:models="clr-namespace:BranchingDialogueSystem.Models"
+             Title="Dialogue">
+    <VerticalStackLayout>
+        <HorizontalStackLayout
+            Margin="20"
+            HorizontalOptions="Center">
+            <Label Text="Status: "
+                    FontSize="33"
+                    HorizontalOptions="Fill">
+                <Label.Behaviors>
+                    <models:StatusTextBehavior/>
+                </Label.Behaviors>
+            </Label>
+            <Label Text="{Binding DialogueText}"
+                   FontSize="33"
+                   HorizontalOptions="Fill"/>
+        </HorizontalStackLayout>
+        <CollectionView x:Name="DialogueChoices"
+                            HorizontalOptions="Center"
+                            ItemsSource="{Binding DialogueChoiceTexts}"
+                            Margin="20"
+                            SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout>
+                        <Button Text="{Binding }" 
+                                FontSize="22"
+                                BackgroundColor="Silver"
+                                TextColor="Black"
+                                Clicked ="OnDialogueOptionChosen"/>
+                    </StackLayout>
+                </DataTemplate>
+           </CollectionView.ItemTemplate>
+         </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

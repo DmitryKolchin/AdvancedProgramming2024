@@ -1,0 +1,77 @@
+{
+  "DialogueText": "Welcome to the negotiation table. How can we work together?",
+  "Status": "Default",
+  "DialogueChoiceTexts": [
+    "Attempt Persuasion",
+    "Threaten",
+    "Neutral Approach"
+  ],
+  "DialogueChoiceNodes": [
+    {
+      "DialogueText": "I believe in the power of our partnership. Let's make this work for both of us.",
+      "Status": "Default",
+      "DialogueChoiceTexts": [
+        "Strong Argument",
+        "Weak Argument"
+      ],
+      "DialogueChoiceNodes": [
+        {
+          "DialogueText": "By aligning our resources, we could double our market reach!",
+          "Status": "Success",
+          "DialogueChoiceTexts": [],
+          "DialogueChoiceNodes": []
+        },
+        {
+          "DialogueText": "Uh, we should work together because... it would be nice?",
+          "Status": "Failure",
+          "DialogueChoiceTexts": [],
+          "DialogueChoiceNodes": []
+        }
+      ]
+    },
+    {
+      "DialogueText": "You will regret it if you don't cooperate with us.",
+      "Status": "Default",
+      "DialogueChoiceTexts": [
+        "Intimidate",
+        "Back Down"
+      ],
+      "DialogueChoiceNodes": [
+        {
+          "DialogueText": "Remember what happened to the last group that opposed us.",
+          "Status": "Success",
+          "DialogueChoiceTexts": [],
+          "DialogueChoiceNodes": []
+        },
+        {
+          "DialogueText": "Actually, never mind. Let's discuss this calmly.",
+          "Status": "Failure",
+          "DialogueChoiceTexts": [],
+          "DialogueChoiceNodes": []
+        }
+      ]
+    },
+    {
+      "DialogueText": "Perhaps we can find a common ground beneficial for both.",
+      "Status": "Default",
+      "DialogueChoiceTexts": [
+        "Compromise",
+        "Delay"
+      ],
+      "DialogueChoiceNodes": [
+        {
+          "DialogueText": "Let's share the profits equally, ensuring mutual benefit.",
+          "Status": "Neutral",
+          "DialogueChoiceTexts": [],
+          "DialogueChoiceNodes": []
+        },
+        {
+          "DialogueText": "Why rush into a decision? Let's think it over for a few days.",
+          "Status": "Neutral",
+          "DialogueChoiceTexts": [],
+          "DialogueChoiceNodes": []
+        }
+      ]
+    }
+  ]
+}
