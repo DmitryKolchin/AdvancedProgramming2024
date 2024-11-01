@@ -19,14 +19,11 @@ internal enum DialogueNodeStatus
 
 internal class DialogueNode
 {
-    public string DialogueText { get; set; }
+    public string DialogueText { get; set; } = string.Empty;
 
     public DialogueNodeStatus Status { get; set; }
 
-    public ObservableCollection<string> DialogueChoiceTexts { get; set; } = new ObservableCollection<string>();
-    public ObservableCollection<DialogueNode> DialogueChoiceNodes { get; set; } = new ObservableCollection<DialogueNode>();
-
-
-    
+    public ObservableCollection<string> DialogueChoiceTexts { get; set; } = [];
+    public ObservableCollection<DialogueNode> DialogueChoiceNodes { get; set; } = [];
 
 }

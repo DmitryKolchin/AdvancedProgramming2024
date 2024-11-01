@@ -9,46 +9,30 @@ public partial class DialoguePage : ContentPage
 	public DialoguePage()
     {
         InitializeComponent();
-        //DialogueNode Root = JsonSerializer.Deserialize<DialogueNode>(jsonString);
+
         string Filename = "D:\\UCA\\AdvancedProgramming2024\\BranchingDialogueSystem\\BranchingDialogueSystem\\Resources\\Dialogues\\DialogueJSON.txt";
         if (File.Exists(Filename))
         {
             string DialogueJson = File.ReadAllText(Filename);
+
+			if (DialogueJson == null)
+			{
+				return;
+			}
+
             DialogueNode Root = JsonSerializer.Deserialize<DialogueNode>(DialogueJson);
 
-            /*
-            DialogueNode DefaultDialogueNode = new DialogueNode();
-            DialogueNode Variant1Node = new DialogueNode();
-            Variant1Node.DialogueText = "Zalupa";
-            DialogueNode Variant2Node = new DialogueNode();
-            string AppDataPath = Directory.GetCurrentDirectory();
-            Variant2Node.DialogueText = AppDataPath;
-
-            DefaultDialogueNode.DialogueChoiceTexts.Add("Variant 1");
-            DefaultDialogueNode.DialogueChoiceNodes.Add(Variant1Node);
-            DefaultDialogueNode.DialogueChoiceTexts.Add("Variant 2");
-            DefaultDialogueNode.DialogueChoiceNodes.Add(Variant2Node);
-            DefaultDialogueNode.DialogueText = "Default text";
-            */
-
+			if (Root == null)
+			{
+				return;
+			}
 
             DisplayDialogue(Root);
-
         }
-
-
-       
-    
-
-        
-        
-        
-		
 	}
 
 	private void DisplayDialogue(DialogueNode NewDialogueNode)
 	{
-        string serialized = JsonSerializer.Serialize(NewDialogueNode);
         BindingContext = NewDialogueNode;
 	}
 
