@@ -1,0 +1,338 @@
+[
+  {
+    "Name": "Fireball",
+    "ManaCost": 50,
+    "Power": 100,
+    "Target": "SingleTarget",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Healing Aura",
+    "ManaCost": 30,
+    "Power": 50,
+    "Target": "AOE",
+    "Type": "Heal"
+  },
+  {
+    "Name": "Shield",
+    "ManaCost": 20,
+    "Power": 0,
+    "Target": "Self",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Curse",
+    "ManaCost": 40,
+    "Power": 60,
+    "Target": "SingleTarget",
+    "Type": "Debuff"
+  },
+  {
+    "Name": "Blizzard",
+    "ManaCost": 70,
+    "Power": 80,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Regenerate",
+    "ManaCost": 25,
+    "Power": 30,
+    "Target": "Self",
+    "Type": "Heal"
+  },
+  {
+    "Name": "Lightning Strike",
+    "ManaCost": 55,
+    "Power": 120,
+    "Target": "SingleTarget",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Mass Shield",
+    "ManaCost": 60,
+    "Power": 0,
+    "Target": "AOE",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Flame Burst",
+    "ManaCost": 45,
+    "Power": 110,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Light Aura",
+    "ManaCost": 30,
+    "Power": 0,
+    "Target": "AOE",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Dark Curse",
+    "ManaCost": 40,
+    "Power": 70,
+    "Target": "SingleTarget",
+    "Type": "Debuff"
+  },
+  {
+    "Name": "Water Wave",
+    "ManaCost": 35,
+    "Power": 90,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Thunderbolt",
+    "ManaCost": 60,
+    "Power": 130,
+    "Target": "SingleTarget",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Earthquake",
+    "ManaCost": 65,
+    "Power": 150,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Magic Barrier",
+    "ManaCost": 50,
+    "Power": 0,
+    "Target": "Self",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Invisibility",
+    "ManaCost": 30,
+    "Power": 0,
+    "Target": "Self",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Meteor Shower",
+    "ManaCost": 90,
+    "Power": 200,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Ice Spike",
+    "ManaCost": 35,
+    "Power": 80,
+    "Target": "SingleTarget",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Hurricane",
+    "ManaCost": 75,
+    "Power": 140,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Holy Light",
+    "ManaCost": 20,
+    "Power": 40,
+    "Target": "Self",
+    "Type": "Heal"
+  },
+  {
+    "Name": "Lightning Storm",
+    "ManaCost": 80,
+    "Power": 180,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Sacred Flame",
+    "ManaCost": 60,
+    "Power": 100,
+    "Target": "SingleTarget",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Venom Strike",
+    "ManaCost": 30,
+    "Power": 70,
+    "Target": "SingleTarget",
+    "Type": "Debuff"
+  },
+  {
+    "Name": "Frost Nova",
+    "ManaCost": 70,
+    "Power": 90,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Mana Shield",
+    "ManaCost": 40,
+    "Power": 0,
+    "Target": "Self",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Arcane Missiles",
+    "ManaCost": 45,
+    "Power": 85,
+    "Target": "SingleTarget",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Healing Rain",
+    "ManaCost": 35,
+    "Power": 60,
+    "Target": "AOE",
+    "Type": "Heal"
+  },
+  {
+    "Name": "Divine Protection",
+    "ManaCost": 50,
+    "Power": 0,
+    "Target": "Self",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Poison Cloud",
+    "ManaCost": 50,
+    "Power": 100,
+    "Target": "AOE",
+    "Type": "Debuff"
+  },
+  {
+    "Name": "Stone Skin",
+    "ManaCost": 25,
+    "Power": 0,
+    "Target": "Self",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Life Drain",
+    "ManaCost": 50,
+    "Power": 70,
+    "Target": "SingleTarget",
+    "Type": "Debuff"
+  },
+  {
+    "Name": "Phoenix Fire",
+    "ManaCost": 100,
+    "Power": 250,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Raging Inferno",
+    "ManaCost": 90,
+    "Power": 210,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Whirlwind",
+    "ManaCost": 55,
+    "Power": 85,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Blessing of Light",
+    "ManaCost": 30,
+    "Power": 0,
+    "Target": "Self",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Shadow Bolt",
+    "ManaCost": 40,
+    "Power": 90,
+    "Target": "SingleTarget",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Serpent's Bite",
+    "ManaCost": 45,
+    "Power": 65,
+    "Target": "SingleTarget",
+    "Type": "Debuff"
+  },
+  {
+    "Name": "Cleansing Wave",
+    "ManaCost": 25,
+    "Power": 0,
+    "Target": "AOE",
+    "Type": "Heal"
+  },
+  {
+    "Name": "Chill Touch",
+    "ManaCost": 35,
+    "Power": 50,
+    "Target": "SingleTarget",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Blood Pact",
+    "ManaCost": 60,
+    "Power": 0,
+    "Target": "Self",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Lunar Strike",
+    "ManaCost": 75,
+    "Power": 160,
+    "Target": "SingleTarget",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Solar Flare",
+    "ManaCost": 65,
+    "Power": 140,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Nature's Grasp",
+    "ManaCost": 50,
+    "Power": 80,
+    "Target": "SingleTarget",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Wrath of the Ancients",
+    "ManaCost": 100,
+    "Power": 250,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Ethereal Form",
+    "ManaCost": 40,
+    "Power": 0,
+    "Target": "Self",
+    "Type": "Buff"
+  },
+  {
+    "Name": "Radiant Heal",
+    "ManaCost": 30,
+    "Power": 70,
+    "Target": "SingleTarget",
+    "Type": "Heal"
+  },
+  {
+    "Name": "Stormcall",
+    "ManaCost": 80,
+    "Power": 150,
+    "Target": "AOE",
+    "Type": "Damage"
+  },
+  {
+    "Name": "Chain Lightning",
+    "ManaCost": 70,
+    "Power": 130,
+    "Target": "AOE",
+    "Type": "Damage"
+  }
+]
