@@ -177,7 +177,7 @@ if (jsonData.Length > 0)
 
 spells ??= CreateSpells();
 ```  
-
+All the source files can be obtained [here]](https://github.com/DmitryKolchin/AdvancedProgramming2024/tree/main/SpellbookSearch)
 ---
 
 ## Critical Reflection  
