@@ -20,6 +20,9 @@ public partial class DialoguePage : ContentPage
 				return;
 			}
 
+			//Create default value
+
+
             DialogueNode Root = JsonSerializer.Deserialize<DialogueNode>(DialogueJson);
 
 			if (Root == null)
