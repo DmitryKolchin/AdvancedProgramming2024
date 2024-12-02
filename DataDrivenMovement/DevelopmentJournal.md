@@ -259,6 +259,9 @@ The result is a visually dynamic simulation at 30 frames per second:
 
 ![](./Resources/GameOfLife.gif)  
 
+
+All the source files could be found [here](https://github.com/DmitryKolchin/AdvancedProgramming2024/tree/main/DataDrivenMovement)
+
 ---
 
 ## Critical Reflection  
