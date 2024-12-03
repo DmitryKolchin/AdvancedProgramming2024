@@ -179,5 +179,5 @@ Source code could be accessed [here](https://github.com/DmitryKolchin/AdvancedPr
 
 Assets made with AI:
 
-- DevelopmentJournal.md
+- ```DevelopmentJournal.md```
 

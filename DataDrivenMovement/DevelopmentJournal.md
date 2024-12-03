@@ -12,7 +12,7 @@
 
 For this task, I aimed to develop two distinct implementations:  
 1. A movement system written in plain C, visualised using raylib.  
-2. Conway's Game of Life [(Conway’s Game of Life, 2024)](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), implemented with a data-driven design paradigm and showcased via raylib.  
+2. Conway's Game of Life [(Conway’s Game of Life | Academo.org - Free, interactive, education., s.d.)](https://academo.org/demos/conways-game-of-life/), implemented with a data-driven design paradigm and showcased via raylib.  
 
 These implementations not only allowed me to experiment with different programming concepts but also provided a platform to explore raylib and gain familiarity with C programming.  
 
@@ -45,6 +45,8 @@ struct EntityData* CreateEntities(int EntitiesNum)
 };
 ```  
 
+*Figure 1. CreateEntities() function implementation*
+
 The `velocityZ` parameter is included for completeness but does not influence the current implementation, as all entities exist in a 2D space.  
 
 Next, I implemented a function to update the entities' positions:  
@@ -65,6 +67,7 @@ void UpdatePositions(struct EntityData* Entities, int EntitiesNum, float DeltaTi
     }
 }
 ```  
+*Figure 2. Logic for updating the positions of the entities*
 
 This update ensures the circles bounce off the screen edges, creating a dynamic effect. Drawing the circles is handled using raylib's `DrawCircle` function [(raylib - cheatsheet, s.d.)](https://www.raylib.com/cheatsheet/cheatsheet.html):  
 
@@ -76,6 +79,7 @@ void DrawEntities(struct EntityData* Entities, int EntitiesNum){
     }
 } 
 ```  
+*Figure 3. Rendering the entities*
 
 Finally, I integrated these components into raylib's main function:  
 
@@ -114,16 +118,19 @@ int main(void)
     return 0;
 } 
 ```  
+*Figure 4. Final order of function calls in the ```main``` function*
 
 The result is a visually dynamic system of bouncing circles, as demonstrated below:  
 
 ![](./Resources/Balls.gif)  
 
+*Figure 5. Moving entities*
+
 ---
 
 ### Conway's Game of Life  
 
-Conway's Game of Life, a cellular automaton, was implemented using a data-driven approach. The first step was to define the necessary data structures:  
+Conway's Game of Life [(Conway’s Game of Life | Academo.org - Free, interactive, education., s.d.)](https://academo.org/demos/conways-game-of-life/), a cellular automaton, was implemented using a data-driven approach. The first step was to define the necessary data structures:  
 
 ```c  
 enum CellState 
@@ -140,6 +147,7 @@ struct Cell
     enum CellState State;
 }; 
 ```  
+*Figure 6. Cell struct*
 
 To initialise the grid, I created the following function:  
 
@@ -161,6 +169,7 @@ struct Cell* CreateCellsGrid(int Rows, int Columns)
     return Cells;
 } 
 ```  
+*Figure 7. Cell grid creation* 
 
 The grid is updated based on two rules:  
 1. Alive cells with fewer than two or more than three neighbours die.  
@@ -199,6 +208,7 @@ int GetCellAliveNeighborsNum(struct Cell* Cells, int CellIndex, int CellRowsNum,
     return AliveNeighborsNum;
 }
 ```  
+*Figure 8. Helper-function that calculates the number of alive neighbours*
 
 Next, I implemented the grid update logic:  
 
@@ -235,7 +245,9 @@ void UpdateCells(struct Cell* Cells, int CellsRowNum, int CellsColumnNum)
     
     free(UpdatedCells);
 }
-```  
+``` 
+
+*Figure 9. Updating the grid based on the game rules*
 
 Finally, I implemented a function to render the cells:  
 
@@ -244,20 +256,21 @@ void DrawCells(struct Cell* Cells, int CellsNum, int CellSizeX, int CellSizeY)
 {
     for (int i = 0; i < CellsNum; ++i)
     {
-        if (Cells[i].State == DEAD)
-        {
-            continue;
-        }
+        Color CellColor = (Cells[i].State == ALIVE) ? RAYWHITE : BLACK;
         int X_Coordinate = Cells[i].Row * CellSizeX + CellSizeX / 2;
         int Y_Coordinate = Cells[i].Column * CellSizeY + CellSizeY / 2;
-        DrawRectangle(X_Coordinate, Y_Coordinate, CellSizeX, CellSizeY, BLACK);
+        DrawRectangle(X_Coordinate, Y_Coordinate, CellSizeX, CellSizeY, CellColor);
     }
 }
-```  
+```
+
+*Figure 10. Rendering cells*
 
 The result is a visually dynamic simulation at 30 frames per second:  
 
 ![](./Resources/GameOfLife.gif)  
+
+*Figure 11. Conway's Game of Life*
 
 
 All the source files could be found [here](https://github.com/DmitryKolchin/AdvancedProgramming2024/tree/main/DataDrivenMovement)
@@ -279,7 +292,7 @@ All the source files could be found [here](https://github.com/DmitryKolchin/Adva
 
 ## Bibliography
 - C Enum (Enumeration) (s.d.) At: https://www.w3schools.com/c/c_enums.php (Accessed  02/12/2024).
-- Conway’s Game of Life (2024) In: Wikipedia. At: https://en.wikipedia.org/w/index.php?title=Conway%27s_Game_of_Life&oldid=1259378461 (Accessed  02/12/2024).
+- Conway’s Game of Life | Academo.org - Free, interactive, education. (s.d.) At: https://academo.org/demos/conways-game-of-life/ (Accessed  03/12/2024).
 - Dynamic Array in C (2023) At: https://www.geeksforgeeks.org/dynamic-array-in-c/ (Accessed  30/11/2024).
 - How to Release Memory in C? (2024) At: https://www.geeksforgeeks.org/how-to-release-memory-in-c/ (Accessed  02/12/2024).
 - Lew, Ł. (2009) Answer to ‘How to generate a random int in C?’ At: https://stackoverflow.com/a/822368 (Accessed  30/11/2024).

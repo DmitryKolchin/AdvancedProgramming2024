@@ -257,6 +257,6 @@ For the full project, including code files and JSON examples, visit the reposito
 
 Assets made with AI:
 
-- DevelopmentJournal.md
+- ```DevelopmentJournal.md```
 - StatusTextBehavior.cs
 

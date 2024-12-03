@@ -9,11 +9,11 @@
 //------------------------------------------------------------------------------------
 
 const int ENTITIES_MAX = 5;
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 450;
+const int SCREEN_WIDTH = 1600;
+const int SCREEN_HEIGHT = 900;
 
-const int CELLS_ROWS_MAX = 80;
-const int CELLS_COLUMNS_MAX = 45;
+const int CELLS_ROWS_MAX = 160;
+const int CELLS_COLUMNS_MAX = 90;
 
 // Struct for entity data (position and velocity)
 struct EntityData
@@ -95,7 +95,9 @@ struct Cell* CreateCellsGrid(int Rows, int Columns)
             struct Cell NewCell;
             NewCell.Row = i;
             NewCell.Column = j;
-            NewCell.State = rand() % 2;
+            
+            int RandomNumber = rand() % 10;
+            NewCell.State = RandomNumber < 2 ? ALIVE : DEAD;
             Cells[i * Columns + j] = NewCell;
         }
     }
@@ -173,13 +175,10 @@ void DrawCells(struct Cell* Cells, int CellsNum, int CellSizeX, int CellSizeY)
 {
     for (int i = 0; i < CellsNum; ++i)
     {
-        if (Cells[i].State == DEAD)
-        {
-            continue;
-        }
+        Color CellColor = (Cells[i].State == ALIVE) ? RAYWHITE : BLACK;
         int X_Coordinate = Cells[i].Row * CellSizeX + CellSizeX / 2;
         int Y_Coordinate = Cells[i].Column * CellSizeY + CellSizeY / 2;
-        DrawRectangle(X_Coordinate, Y_Coordinate, CellSizeX, CellSizeY, BLACK);
+        DrawRectangle(X_Coordinate, Y_Coordinate, CellSizeX, CellSizeY, CellColor);
     }
 }
 
@@ -211,7 +210,7 @@ int main(void)
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(LIGHTGRAY);
         //DrawEntities(Entities, ENTITIES_MAX);
         DrawCells(Cells, CELLS_ROWS_MAX * CELLS_COLUMNS_MAX, CellSizeX, CellSizeY);
         

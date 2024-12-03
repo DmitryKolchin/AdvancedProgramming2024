@@ -23,6 +23,8 @@ The first exposure I had to Unreal Insights was through **Ari Arnbjörnsson's pr
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/GuIav71867E?si=Mu1Hnq_-vtIEc6uh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+*Figure 1. Maximizing Your Game's Performance in Unreal Engine | Unreal Fest 2022*
+
 After watching the presentation, I proceeded with additional research by studying the official documentation from Epic Games: [Trace Insights](https://dev.epicgames.com/documentation/en-us/unreal-engine/trace-in-unreal-engine-5).
 
 ---
@@ -53,6 +55,7 @@ struct FInventoryItem
 	}
 };
 ```
+*Figure 2. Inventory item struct*
 
 This struct enables the `UInventory` class to manage an array of `FInventoryItem` instances, with the array declared as protected to ensure encapsulation and allow access only within the Blueprint child class.
 
@@ -61,6 +64,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FInventoryItem> Items;
 ```
+*Figure 3. Items array*
 
 ### Inventory API Implementation
 
@@ -85,6 +89,7 @@ void UInventory::DisplayInventory()
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *SeparationLine);
 }
 ```
+*Figure 4. Inventory interface*
 
 ---
 
@@ -167,6 +172,7 @@ private:
 
 
 ```
+*Figure 5. Merge sort under-the-hood implementation*
 
 #### Public Sorting Methods
 
@@ -189,12 +195,14 @@ void UInventory::SortItemsByValue_Implementation()
 	});
 }
 ```
-
+*Figure 6. Merge public interface*
 #### Testing
 
 In order to check that our sorting is working properly, I created a simple Blueprint script within the level blueprint which tests the sorts:
 
 <iframe width="100%" height="500px" src="https://blueprintue.com/render/q1xj89de/" scrolling="no" allowfullscreen></iframe>
+
+*Figure 7. Blueprint logic for testing sorts*
 
 And it gives us the following results:
 ```md
@@ -220,6 +228,7 @@ LogTemp: Warning: Shield 100
 LogTemp: Warning: Sword 150
 LogTemp: Warning: ----------------
 ```
+*Figure 8. Output log*
 ### Blueprint Sorting
 
 Due to limitations in Unreal Engine’s Blueprint system, specifically its lack of built-in string comparison, I implemented sorting by value only in Blueprints. The algorithm for sorting by name would have all the same nodes except for comparison itself. A child class `BP_Inventory` was created, which overrides the C++ sorting methods and provides a Blueprint-based implementation.
@@ -227,10 +236,14 @@ Due to limitations in Unreal Engine’s Blueprint system, specifically its lack 
 
 
 <iframe width="100%" height="500px" src="https://blueprintue.com/render/pw3y6wl_/" scrolling="no" allowfullscreen></iframe>
+
+*Figure 9. Sorting by value Blueprints implementation*
 <iframe  width="100%" height="500px" src="https://blueprintue.com/render/t7-vzjuh/" scrolling="no" allowfullscreen></iframe>
 
+*Figure 10. Sorting part of the array by value Blueprints implementation*
 <iframe width="100%" height="500px" src="https://blueprintue.com/render/qjhqut7j/" scrolling="no" allowfullscreen></iframe>
 
+*Figure 11. Merging two sorted array parts in Blueprints*
 
 ---
 
@@ -239,6 +252,8 @@ Due to limitations in Unreal Engine’s Blueprint system, specifically its lack 
 To assess the performance of the C++ and Blueprint implementations, I conducted tests using **Unreal Insights**. To ensure accuracy, I added a delay node before sorting to isolate the initialization logic from the sorting operation. Print statements were also inserted to make the function calls easier to trace in the profiler. Here is the Blueprint Script I used for performance testing
 <iframe width="100%" height="500px" src="https://blueprintue.com/render/lh47imgp/" scrolling="no" allowfullscreen></iframe>
 
+*Figure 12. Testing logic in level blueprint*
+
 ### Outcome
 
 **C++ Sorting Performance:**  
@@ -246,10 +261,13 @@ To assess the performance of the C++ and Blueprint implementations, I conducted 
 
 ![C++ Performance](./Resources/CPP_Sorting.png)
 
+*Figure 13. Unreal Insights screenshot for C++ implementation*
+
 **Blueprint Sorting Performance:**  
 *153.5 microseconds*  
 
 ![Blueprint Performance](./Resources/BP_Sorting.png)
+*Figure 14. Unreal Insights screenshot for Blueprint implementation*
 
 As demonstrated by these results, the Blueprint version is approximately **34 times slower** than the C++ implementation. This highlights the significant performance overhead associated with Blueprint scripting for computationally intensive tasks such as sorting.
 
@@ -282,6 +300,4 @@ All the project files with the implementations and testing code could be found [
 ## Declared Assets
 
 The following assets were created or modified with the use of GPT 4o:
-```md 
-- DevelopmentJournal.md
-```
+- ```DevelopmentJournal.md```

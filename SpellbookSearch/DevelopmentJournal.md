@@ -38,7 +38,6 @@ The final Levenshtein distance is stored in `Distances[n][m]`, where *n* and *m*
 
 The implementation in C# is as follows:  
 ```cs
-```cs
 static int LevenshteinDistance(string left, string right)
     {
         // Create a 2D array to store the distances
@@ -177,7 +176,8 @@ if (jsonData.Length > 0)
 
 spells ??= CreateSpells();
 ```  
-All the source files can be obtained [here]](https://github.com/DmitryKolchin/AdvancedProgramming2024/tree/main/SpellbookSearch)
+All the source files can be obtained [here](https://github.com/DmitryKolchin/AdvancedProgramming2024/tree/main/SpellbookSearch)
+
 ---
 
 ## Critical Reflection  

@@ -10,11 +10,15 @@
 
 Despite not having ClickUp amongst the provided options in the task, I still decided to use it due to the following facts:
 - It was mentioned equally amongst the biased ratings of other task tracker software sites, like Teamhub [(Ansar, 2024)](https://teamhub.com/blog/best-project-management-tools-for-game-developers/), Placky [(7 Best Project Management Tools for Game Development, 2022)](https://plaky.com/blog/game-project-management/), Codecks [(8 Best Project Management Tools for Game Development (The Ultimate List), s.d.)](https://www.codecks.io/blog/project-management-tools-in-game-development/), and sites, that look more or less indepedndent, like [DPM](https://www.codecks.io/blog/project-management-tools-in-game-development/) also mention it. All of them underline ClickUp's ability to view taks both as Kanban board or as a task list, as well as the overall high level of customisation - custom fields, colorful themes, etc.
-- Me personally like it more than any other alternative (which is a little bit subjective), and I had experience with Trello, You Track and Jira in both professional and personal organisation routine. ClickUp provides the capabilities of in-place time tracking (for instance, I am tracking me doing the development journal now in ClickUp) which I find very convinient. It is connected to my phone app so I can check updates on my tasks and plan the day on the go. I am quite sure that no else students gonna use it. Plus, it provides the ability to embed tasks and lists, like this:
-<iframe class="clickup-embed" src="https://sharing.clickup.com/9015630444/t/h/86c0ebvxh/0B4VGPT0LRI6UW0" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
-```
+- Me personally like it more than any other alternative (which is a little bit subjective), and I had experience with Trello, 
+You Track and Jira in both professional and personal organisation routine. ClickUp provides the capabilities of in-place time
+ tracking (for instance, I am tracking me doing the development journal now in ClickUp) which I find very convinient. It
+  is connected to my phone app so I can check updates on my tasks and plan the day on the go. I am quite sure that no else
+   students gonna use it. Plus, it provides the ability to embed tasks and lists, like this:
+<iframe class="clickup-embed" src="https://sharing.clickup.com/9015630444/t/h/86c0ebvxh/0B4VGPT0LRI6UW0"
+ onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
-
+*Figure 1. My own task in ClickUp* 
 
 ## Implementation
 
@@ -24,6 +28,8 @@ Given that we have a clear end goal, fully planned systems, and a comprehensive 
 
 Here is the Gantt diagram illustrating the weekly task distribution:
 <iframe class="clickup-embed" src="https://sharing.clickup.com/9015630444/g/h/8cnz6kc-195/532d43ffd8bc1ce" onwheel="" width="100%" height="700px" style="background: transparent; border: 1px solid #ccc;"></iframe>
+
+*Figure 2. Gantt diagram* 
 
 ---
 
