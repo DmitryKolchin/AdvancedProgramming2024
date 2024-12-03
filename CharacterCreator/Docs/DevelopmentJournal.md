@@ -1,21 +1,28 @@
-#include <iostream>
-#include <map>
-#include <string>
 
-// Define the character classes
-enum class CharacterClass
-{
-    Warrior,
-    Rogue,
-    Mage,
-    Wizard,
-    Ranger,
-    Monk,
-    Bard,
-    Paladin,
-    Cleric
-};
+# Character Creator
 
+**Advanced Programming**
+
+**Dmitrii Kolchin**  
+**2220982**
+
+## Initial Research
+
+For this project, I aimed to:
+1. Implement the required functionality to explore the **Decorator** design pattern [(Decorator, n.d.)](https://refactoring.guru/design-patterns/decorator).
+2. Gain additional hands-on experience with the **Factory Method** pattern [(Factory Method, n.d.)](https://refactoring.guru/design-patterns/factory-method).
+
+These objectives allowed me to deepen my understanding of object-oriented design principles and apply them effectively to a practical use case.
+
+---
+
+## Implementation
+
+### Encapsulating Character Stats
+
+To manage character attributes effectively, I encapsulated them in a dedicated `CharacterStats` structure. This approach simplifies attribute manipulation and reduces duplication. The `+` operator was overridden to facilitate easy addition of stats, which is particularly useful for stacking modifiers introduced by decorators.
+
+```cpp
 struct CharacterStats
 {
     int strength, agility, endurance, intelligence, willpower, speed, luck;
@@ -49,7 +56,14 @@ struct CharacterStats
         };
     }
 };
+```
+*Figure 1. `CharacterStats` structure implementation*
 
+### Character Base Class
+
+The `Character` class serves as the foundation for all characters. It encapsulates key properties, such as `name`, `characterClass`, and `characterStats`, while also providing a virtual `PrintCharacterInfo()` method for polymorphic behaviour. 
+
+```cpp
 // Character base class
 class Character
 {
@@ -72,13 +86,17 @@ public:
 
     virtual ~Character() = default;
 };
+```
+*Figure 2. `Character` class implementation*
 
-// Factory for character creation
-class CharacterFactory
-{
+### Factory Pattern
 
-public:
-    static Character* CreateCharacter(const std::string& name, CharacterClass charClass)
+To streamline character creation and manage default stats for various classes, I implemented the **Factory Method** pattern. 
+The `CreateCharacter()` method centralises the logic, leveraging a map for default stats, 
+which makes the implementation extendable and maintainable. This design was inspired by "Code Complete" (McConnell, 2004:414) .
+
+```cpp
+static Character* CreateCharacter(const std::string& name, CharacterClass charClass)
     {
         std::map<CharacterClass, CharacterStats> defaultStats = {
             {CharacterClass::Warrior, CharacterStats{10, 5, 8, 3, 5, 5, 3}},
@@ -96,8 +114,14 @@ public:
 
         return character;
     }
-};
+```
+*Figure 3. `CreateCharacter()` function implementation*
 
+### Decorator Pattern
+
+To dynamically modify character attributes, I implemented the **Decorator** pattern. Each decorator layer wraps a `Character` object and applies stat modifications to the `characterStats` field. Since stats are updated directly, the base `PrintCharacterInfo()` function remains unchanged.
+
+```cpp
 // Decorator for adding abilities or modifiers to characters
 class CharacterDecorator : public Character
 {
@@ -112,21 +136,48 @@ public:
         characterStats = character->characterStats + statsModifications;
     }
 };
+```
+*Figure 4. `CharacterDecorator` class implementation*
 
+### Example Usage
 
+Equipping items using decorators becomes straightforward with this design:
 
-// Task for student: Implement a concrete decorator (e.g., EnchantedArmor, SpecialWeapon) to modify character stats
-
-int main()
-{
+```cpp
     // Task for student: Create a character using the factory and apply decorators
     Character* warrior = CharacterFactory::CreateCharacter("Warrior", CharacterClass::Warrior);
     warrior->PrintCharacterInfo();
-
+    
     CharacterDecorator* SwordedWarrior = new CharacterDecorator(warrior, CharacterStats{ 5, 0, 0, 0, 0, 0, 0 });
     SwordedWarrior->PrintCharacterInfo();
-
+    
     CharacterDecorator* ArmoredSwordedWarrior = new CharacterDecorator(SwordedWarrior, CharacterStats{ 0, 0, 5, 0, 0, 0, 0 });
     ArmoredSwordedWarrior->PrintCharacterInfo();
-    return 0;
-}
+```
+
+
+Source code could be accessed [here](https://github.com/DmitryKolchin/AdvancedProgramming2024/tree/main/CharacterCreator/CharacterCreator)
+
+---
+
+## Critical Reflection
+
+### What Went Well
+- Successfully implemented and gained practical experience with the **Decorator** and **Factory Method** patterns.
+- Simplified character stat manipulation using encapsulation and operator overloading.
+
+### Areas for Improvement
+- Considered implementing the **Strategy** pattern [(Strategy, n.d.)](https://refactoring.guru/design-patterns/strategy), which might better fit the context by decoupling character behaviour from classes. 
+
+## Bibliography
+- Decorator (s.d.) At: https://refactoring.guru/design-patterns/decorator (Accessed  03/12/2024).
+- Factory Method (s.d.) At: https://refactoring.guru/design-patterns/factory-method (Accessed  03/12/2024).
+- Mcconell, S. (2004) Code Complete: A Practical Handbook of Software Construction. (2nd edition) (s.l.): Microsoft Press US.
+- Strategy (s.d.) At: https://refactoring.guru/design-patterns/strategy (Accessed  03/12/2024).
+
+## Declared Assets
+
+Assets made with AI:
+
+- DevelopmentJournal.md
+
