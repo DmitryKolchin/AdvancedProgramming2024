@@ -9,7 +9,7 @@
 ## Research  
 
 The implementation of this task required focusing on two primary areas:  
-1. **Dynamic Programming and Levenshtein Distance**: To address the problem, I revisited the concept of dynamic programming algorithms. Inspired by Aimar's suggestion, I utilised the Levenshtein distance to enable search results to display close variants of a query.  
+1. **Dynamic Programming and Levenshtein Distance**: To address the problem, I revisited the concept of dynamic programming algorithms. Inspired by Aimar's suggestion, I utilised the Levenshtein distance [(Introduction to Levenshtein distance - GeeksforGeeks, s.d.)](https://www.geeksforgeeks.org/introduction-to-levenshtein-distance/) distance to enable search results to display close variants of a query.  
 2. **Hosting a Web App**: I explored using the PythonAnywhere service to host a web application. This approach allowed me to store a JSON file containing all the spells and fetch it dynamically in C#. This method eliminated the need for hardcoding the spells, as required in the initial task, and avoided issues associated with reading local files.  
 
 ---
@@ -18,7 +18,7 @@ The implementation of this task required focusing on two primary areas:
 
 ### Calculating the Levenshtein Distance  
 
-I implemented a function to calculate the Levenshtein distance [(Levenshtein Distance, 2024)](https://en.wikipedia.org/w/index.php?title=Levenshtein_distance&oldid=1242756268) between two strings. This was achieved using the Wagner-Fischer algorithm [(Wagner-Fischer Algorithm, 2024)](https://en.wikipedia.org/w/index.php?title=Wagner%E2%80%93Fischer_algorithm&oldid=1211775080), a dynamic programming-based approach.  
+I implemented a function to calculate the Levenshtein distance [(Introduction to Levenshtein distance - GeeksforGeeks, s.d.)](https://www.geeksforgeeks.org/introduction-to-levenshtein-distance/) between two strings. This was achieved using the Wagner-Fischer algorithm [(Gaddam, 2024)](https://medium.com/@yasaswini.gaddam21/wagner-fischer-algorithm-minimum-edit-distance-4e61bba9b656), a dynamic programming-based approach.  
 
 The algorithm utilises a `Distances[][]` array where `Distances[i][j]` represents the Levenshtein distance between the first *i* characters of the first string and the first *j* characters of the second string. The array is populated as follows:  
 - **Base cases**:  
@@ -86,6 +86,7 @@ static int LevenshteinDistance(string left, string right)
         return distances[left.Length][right.Length];
     } 
 ```  
+*Figure 1. Levenshtein distance calculation implemented*
 
 ### Searching Spells  
 
@@ -98,6 +99,7 @@ For flexibility, I implemented a method that retrieves all searchable fields for
         return new string[] {Name, Target.ToString(), Type.ToString()};
     }
 ```
+*Figure 2. Function that returns an arrya of all spell fields that can be searched*
 Using this, I iterated through the array of spells, retrieved their associated keywords, and compared them to the query, with a maximum Levenshtein distance of 2:  
 ```cs
  public static List<Spell> SearchSpells(List<Spell> spellList, string keyword)
@@ -125,6 +127,7 @@ Using this, I iterated through the array of spells, retrieved their associated k
         return results;
     }
 ```
+*Figure 3. Search logic*
 
 ### Hosting JSON on PythonAnywhere  
 
@@ -138,6 +141,7 @@ To host the spell data, I converted the `CreateSpells` function output to JSON f
     "Type": "Damage"
 }
 ```  
+*Figure 4. JSON entry for a "Fireball" spell*
 
 I then created a Flask-based web application hosted on PythonAnywhere, with the following code:  
 ```py
@@ -152,6 +156,7 @@ def get_spell_list():
         data = json.load(file)
     return jsonify(data)
 ```  
+*Figure 5. Flask app code*
 
 The web app is accessible at [https://pazhilayazhaba.pythonanywhere.com/](https://pazhilayazhaba.pythonanywhere.com/).  
 
@@ -176,6 +181,7 @@ if (jsonData.Length > 0)
 
 spells ??= CreateSpells();
 ```  
+*Figure 6. Reading spells JSON from the hosted web application*
 All the source files can be obtained [here](https://github.com/DmitryKolchin/AdvancedProgramming2024/tree/main/SpellbookSearch)
 
 ---
@@ -194,11 +200,12 @@ All the source files can be obtained [here](https://github.com/DmitryKolchin/Adv
 ---  
 
 ## Bibliography
-- Levenshtein distance (2024) In: Wikipedia. At: https://en.wikipedia.org/w/index.php?title=Levenshtein_distance&oldid=1242756268 (Accessed  30/11/2024).
+- Gaddam, Y. (2024) Wagner–Fischer algorithm: Minimum Edit Distance. At: https://medium.com/@yasaswini.gaddam21/wagner-fischer-algorithm-minimum-edit-distance-4e61bba9b656 (Accessed  04/12/2024).
+- Introduction to Levenshtein distance - GeeksforGeeks (s.d.) At: https://www.geeksforgeeks.org/introduction-to-levenshtein-distance/ (Accessed  04/12/2024).
 - PythonAnywere (2015) The PythonAnywhere help pages. At: https://help.pythonanywhere.com/pages/ (Accessed  30/11/2024).
 - Rick-Anderson (s.d.) HttpResponse Class (System.Web). At: https://learn.microsoft.com/en-us/dotnet/api/system.web.httpresponse?view=netframework-4.8.1 (Accessed  30/11/2024).
-- Wagner–Fischer algorithm (2024) In: Wikipedia. At: https://en.wikipedia.org/w/index.php?title=Wagner%E2%80%93Fischer_algorithm&oldid=1211775080 (Accessed  08/11/2024).
 - Welcome to Flask — Flask Documentation (3.1.x) (s.d.) At: https://flask.palletsprojects.com/en/stable/ (Accessed  30/11/2024).
+
 ## Declared Assets
 
 The following assets were created or modified with the use of GPT 4o:

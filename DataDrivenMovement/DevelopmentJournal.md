@@ -268,7 +268,7 @@ void DrawCells(struct Cell* Cells, int CellsNum, int CellSizeX, int CellSizeY)
 
 The result is a visually dynamic simulation at 30 frames per second:  
 
-![](./Resources/GameOfLife.gif)  
+![](./Resources/GameoOfLifeCorrected.gif)  
 
 *Figure 11. Conway's Game of Life*
 
